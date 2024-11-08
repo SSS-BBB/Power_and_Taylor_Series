@@ -16,7 +16,7 @@ class PowerSerie():
         self.power = power
 
     def compute(self, x_a: float = -10, x_b: float = 10, x_step: float = 1,
-                k_a: int = 1, k_b: int = 100,):
+                k_a: int = 0, k_b: int = 100):
         x_min = x_a
         x_max = x_b
         if x_a > x_b:
@@ -44,21 +44,41 @@ class PowerSerie():
 
         return (x_list, np.array(s))
 
-    def plot_serie(self, axis):
+    def plot_serie(self, axis, label=""):
         axis.scatter(self.x_samples, self.y_container)
-        axis.plot(self.x_samples, self.y_container)
+        axis.plot(self.x_samples, self.y_container, label=label)
 
+class TaylorSerie(PowerSerie):
+    
+    def __init__(self, fk_x0: callable, center = 0):
+        cn = lambda k:  fk_x0(k, center) / math.factorial(k)
+        super().__init__(cn, center, 1)
 
-
-def pSeries(k):
-    return 1 / (k*k)
-
-BasicPower = PowerSerie(cn=pSeries, center=5)
-x_container, y_container = BasicPower.compute(x_a=3, x_b=7, k_a=1, k_b=100)
+# Power = PowerSerie(cn = lambda k: math.pow(-1, k) / (math.pow(4, k)*(k + 5)), center=1)
+# Power.compute(x_a=-4, x_b=6)
 
 # plot
 fig, axis = plt.subplots(1, 1)
 
-BasicPower.plot_serie(axis)
+# Power.plot_serie(axis)
 
+def fk(k, x0):
+    remainder = k % 4
+    if remainder == 0:
+        return math.sin(x0)
+    elif remainder == 1:
+        return math.cos(x0)
+    elif remainder == 2:
+        return -math.sin(x0)
+
+    return -math.cos(x0)
+
+TaylorSerie = TaylorSerie(fk)
+
+TaylorSerie.compute()
+TaylorSerie.plot_serie(axis, label="E Series")
+
+axis.plot(TaylorSerie.x_samples, np.sin(TaylorSerie.x_samples), label="E Function")
+
+axis.legend()
 plt.show()
