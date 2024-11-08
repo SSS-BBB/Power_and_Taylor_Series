@@ -152,7 +152,9 @@ Taylor = PowerSerieWithAnim(cn=lambda k: 1 / math.factorial(k),
 
 axis.plot(Taylor.x_samples, np.exp(Taylor.x_samples), label="Function", linewidth=0.75) # plot real function
 
-anim = FuncAnimation(fig=fig, func=Taylor.compute, frames=Taylor.total_frames, interval=250)
+anim = FuncAnimation(fig=fig, func=Taylor.compute, frames=Taylor.total_frames, interval=300)
+
+anim.save("Taylor_Series.gif")
 
 axis.legend()
 plt.show()
