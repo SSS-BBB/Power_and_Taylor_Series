@@ -146,11 +146,11 @@ fig, axis = plt.subplots()
 
 # anim plot
 anim_plot, = axis.plot([], [])
-Taylor = PowerSerieWithAnim(cn=lambda k: math.pow(-1, k+1) / k, 
-                            center=1, anim_plot=anim_plot,
-                            k_a=1, k_b=50, x_a=0.1, x_b=2, x_step=0.1)
+Taylor = PowerSerieWithAnim(cn=lambda k: 1 / math.factorial(k), 
+                            center=0, anim_plot=anim_plot,
+                            k_a=1, k_b=50, x_a=-10, x_b=10, x_step=1)
 
-axis.plot(Taylor.x_samples, np.log(Taylor.x_samples), label="Function", linewidth=0.75) # plot real function
+axis.plot(Taylor.x_samples, np.exp(Taylor.x_samples), label="Function", linewidth=0.75) # plot real function
 
 anim = FuncAnimation(fig=fig, func=Taylor.compute, frames=Taylor.total_frames, interval=250)
 
