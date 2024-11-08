@@ -1,10 +1,14 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 class PowerSerie():
 
     cn = 1
     center = 0
     power = 1
+
+    x_samples = np.array([])
+    y_container = np.array([])
 
     def __init__(self, cn: callable, center: int = 0, power: float = 1):
         self.cn = cn
@@ -26,18 +30,37 @@ class PowerSerie():
             k_end = k_a
 
         x_list = np.arange(x_min, x_max + x_step, x_step) # list of all x that are used to calculate the function
-        s_x = [] # s(x) -> list of summation of the serie for each x from x_list
+        s = [] # s(x) -> list of summation of the serie for each x from x_list
 
-        for _ in x_list:
-            s_x.append(0) # init s(x) = 0 for all x
+        # for _ in x_list:
+        #     s_x.append(0) # init s(x) = 0 for all x
 
-        for k in range(k_start, k_end + 1):
-            for i in range(len(x_list)):
-                x = x_list[i]
-                s_x[i] += self.cn(k) * pow((x - self.center), k * self.power)
+        for x in x_list:
+            s_x = 0
+            for k in range(k_start, k_end + 1):
+                s_x += self.cn(k) * pow((x - self.center), k * self.power)
+            s.append(s_x)
 
-        return (x_list, s_x)
-        
+        # for k in range(k_start, k_end + 1):
+        #     for i in range(len(x_list)):
+        #         x = x_list[i]
+        #         s_x[i] += self.cn(k) * pow((x - self.center), k * self.power)
 
-BasicPower = PowerSerie(cn=lambda k : 1/(k*k))
-print(BasicPower.compute(x_a=0, x_b=5, k_a=1, k_b=5))
+        self.x_samples = x_list
+        self.y_container = np.array(s)
+
+        return (x_list, np.array(s))
+
+    def plot_serie(self, axis):
+        axis.plot(self.x_samples, self.y_container)
+
+
+
+BasicPower = PowerSerie(cn=lambda k : 1/(k*k), center=5)
+print(BasicPower.compute(x_a=1, x_b=10, k_a=1, k_b=5))
+
+# plot
+fig, axis = plt.subplots(1, 1)
+
+BasicPower.plot_serie(axis)
+plt.show()
